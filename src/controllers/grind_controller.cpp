@@ -550,42 +550,42 @@ void GrindController::update() {
 
     // Check for negative weight failsafe after TARE_CONFIRM phase during active grinding
     // Only check after motor has settled to avoid false positives from startup transients
-    if (phase != GrindPhase::COMPLETED && phase != GrindPhase::TIMEOUT &&
-        phase != GrindPhase::IDLE && phase != GrindPhase::INITIALIZING &&
-        phase != GrindPhase::SETUP && phase != GrindPhase::TARING &&
-        phase != GrindPhase::TARE_CONFIRM &&
-        grinder->is_motor_settled() &&
-        loop_data.current_weight < -1.0f) {
-        timeout_phase = phase;
-        grinder->stop();
-        last_session_result_ = GrindSessionResult::ERROR;
+    //if (phase != GrindPhase::COMPLETED && phase != GrindPhase::TIMEOUT &&
+    //    phase != GrindPhase::IDLE && phase != GrindPhase::INITIALIZING &&
+    //    phase != GrindPhase::SETUP && phase != GrindPhase::TARING &&
+    //    phase != GrindPhase::TARE_CONFIRM &&
+    //    grinder->is_motor_settled() &&
+    //    loop_data.current_weight < -1.0f) {
+    //    timeout_phase = phase;
+    //    grinder->stop();
+    //    last_session_result_ = GrindSessionResult::ERROR;
 
-        queue_log_message("--- NEGATIVE WEIGHT FAILSAFE TRIGGERED: %.2fg in phase %s ---\n",
-                         loop_data.current_weight, get_phase_name(timeout_phase));
-        set_error_message("Err: neg wt");
-        switch_phase(GrindPhase::TIMEOUT, loop_data);
-    }
+    //    queue_log_message("--- NEGATIVE WEIGHT FAILSAFE TRIGGERED: %.2fg in phase %s ---\n",
+    //                     loop_data.current_weight, get_phase_name(timeout_phase));
+    //    set_error_message("Err: neg wt");
+    //    switch_phase(GrindPhase::TIMEOUT, loop_data);
+    //}
     // Only check timeout during active grinding phases, not during completion states or user confirmation
-    else if (phase != GrindPhase::COMPLETED && phase != GrindPhase::TIMEOUT && phase != GrindPhase::PURGE_CONFIRM && check_timeout()) {
-        timeout_phase = phase;
-        grinder->stop();
-        last_session_result_ = GrindSessionResult::TIMEOUT;
-        
-        queue_log_message("--- GRIND TIMEOUT in phase %s ---\n", get_phase_name(timeout_phase));
-        char timeout_msg[32];
-        const char* phase_name = get_phase_name(timeout_phase);
-        if (phase_name && phase_name[0]) {
-            char phase_short[5];
-            strncpy(phase_short, phase_name, sizeof(phase_short) - 1);
-            phase_short[sizeof(phase_short) - 1] = '\0';
-            snprintf(timeout_msg, sizeof(timeout_msg), "Timeout:%s", phase_short);
-        } else {
-            snprintf(timeout_msg, sizeof(timeout_msg), "Timeout");
-        }
-        set_error_message(timeout_msg);
-        switch_phase(GrindPhase::TIMEOUT, loop_data);
-    }
-}
+//    else if (phase != GrindPhase::COMPLETED && phase != GrindPhase::TIMEOUT && phase != GrindPhase::PURGE_CONFIRM && check_timeout()) {
+//        timeout_phase = phase;
+//        grinder->stop();
+//        last_session_result_ = GrindSessionResult::TIMEOUT;
+//        
+//        queue_log_message("--- GRIND TIMEOUT in phase %s ---\n", get_phase_name(timeout_phase));
+//        char timeout_msg[32];
+//        const char* phase_name = get_phase_name(timeout_phase);
+//        if (phase_name && phase_name[0]) {
+//            char phase_short[5];
+//            strncpy(phase_short, phase_name, sizeof(phase_short) - 1);
+//            phase_short[sizeof(phase_short) - 1] = '\0';
+//            snprintf(timeout_msg, sizeof(timeout_msg), "Timeout:%s", phase_short);
+//        } else {
+//            snprintf(timeout_msg, sizeof(timeout_msg), "Timeout");
+//        }
+//        set_error_message(timeout_msg);
+//        switch_phase(GrindPhase::TIMEOUT, loop_data);
+//    }
+//}
 
 // OLD predictive_grind method removed - logic now inline in update()
 
