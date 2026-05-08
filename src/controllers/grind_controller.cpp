@@ -551,13 +551,17 @@ void GrindController::update() {
     // Emit progress update events every cycle for responsive UI
     emit_progress_update(loop_data);
 
+    int check_neg_weight = 0;
+
      //Check for negative weight failsafe after TARE_CONFIRM phase during active grinding
      //Only check after motor has settled to avoid false positives from startup transients
     if (phase != GrindPhase::COMPLETED && phase != GrindPhase::TIMEOUT &&
         phase != GrindPhase::IDLE && phase != GrindPhase::INITIALIZING &&
         phase != GrindPhase::SETUP && phase != GrindPhase::TARING &&
         phase != GrindPhase::TARE_CONFIRM &&
-        grinder->is_motor_settled()) {
+        grinder->is_motor_settled() &&
+        loop_data.current_weight < -1.0f  &&
+        check_neg_weight != 0) {
         timeout_phase = phase;
         grinder->stop();
         last_session_result_ = GrindSessionResult::ERROR;
