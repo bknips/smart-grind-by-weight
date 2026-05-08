@@ -67,26 +67,9 @@ jobs:
           if True:
               import json
               import os
-              import time
-              import urllib.request
 
               firmware_root = "tools/web-flasher/firmware"
               entries = []
-
-              def wait_for(url, retries=30, delay=30):
-                  for attempt in range(retries):
-                      try:
-                          with urllib.request.urlopen(url) as response:
-                              if response.status == 200:
-                                  print(f"  [OK] {url} (attempt {attempt + 1})")
-                                  return True
-                      except Exception:
-                          print(f"  [WAIT] {url} (attempt {attempt + 1})")
-                      time.sleep(delay)
-                  total = retries * delay
-                  minutes = total // 60
-                  print(f"  [FAIL] {url} after {retries} attempts (~{minutes}m)")
-                  return False
 
               for tag in sorted(os.listdir(firmware_root), reverse=True):
                   tag_path = os.path.join(firmware_root, tag)
@@ -105,12 +88,6 @@ jobs:
 
                   prerelease = any(key in tag for key in ("-rc", "-beta", "-alpha"))
                   version = tag.lstrip('v')
-
-                  manifest_url = f"https://bknips.github.io/smart-grind-by-weight/{manifest_rel}"
-                  ota_url = f"https://bknips.github.io/smart-grind-by-weight/{ota_rel}"
-
-                  if not wait_for(manifest_url) or not wait_for(ota_url):
-                      continue
 
                   entries.append({
                       "tag": tag,
