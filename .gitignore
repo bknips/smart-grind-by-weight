@@ -1,5 +1,6 @@
 .pio
 .vscode/
+.vs/
 
 # Generated build info
 include/git_info.h
